@@ -7,6 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('m1p11mean-backend-ravo-lucas:server');
 var http = require('http');
+var mongoose = require('mongoose');
 
 /**
  * Get port from environment and store in Express.
@@ -25,9 +26,18 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+const DB_URL = process.env.MONGODB_URL;
+mongoose
+    .connect(DB_URL)
+    .then( () => {
+        server.listen(port);
+        server.on('error', onError);
+        server.on('listening', onListening);
+    })
+    .catch( (error) => {
+        console.error('[e]', error);
+    })
+;
 
 /**
  * Normalize a port into a number, string, or false.
