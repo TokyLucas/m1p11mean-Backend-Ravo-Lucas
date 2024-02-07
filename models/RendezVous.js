@@ -1,5 +1,5 @@
-const { Int32 } = require('mongodb');
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
 const rendezVousSchema = mongoose.Schema(
     {
@@ -7,17 +7,17 @@ const rendezVousSchema = mongoose.Schema(
             type: Date,
             required: [true, "Date requis"]
         },
-        services: {
-            type: Array,
-            required: [true, "Services requis"]
+        services: [{
+            type: Schema.Types.ObjectId, 
+            ref: 'Service'  
+        }],
+        employe: { 
+            type: Schema.Types.ObjectId, 
+            ref: 'Employe' 
         },
-        clt_id: {
-            type: String,
-            required: [true, "Client ID requis"]
-        },
-        emp_id: {
-            type: String,
-            required: [true, "Employe ID requis"]
+        client: { 
+            type: Schema.Types.ObjectId,
+            ref: 'Client' 
         }
     }
 );

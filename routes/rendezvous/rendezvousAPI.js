@@ -2,15 +2,18 @@ var express = require('express');
 var router = express.Router();
 
 var RendezVous = require('../../models/RendezVous');
+var Employe = require('../../models/Employe');
+var Client = require('../../models/Client');
+var Service = require('../../models/Service');
 
 router.get('/findRendezVous', async(req, res, next) => {
     try {
-        var {emp_id, clt_id} = req.query;
+        var {employe, client} = req.query;
         const criteria = {};
-        if (emp_id != undefined) criteria.emp_id = emp_id;
-        if (clt_id != undefined) criteria.clt_id = clt_id;
+        if (client != undefined) criteria.client = client;
+        if (employe != undefined) criteria.employe = employe;
 
-        var rendezVous = await RendezVous.find(criteria) ;
+        var rendezVous = await RendezVous.find(criteria).populate(['services', 'employe', 'client']).exec() ;
         res.set('Access-Control-Allow-Origin', '*');
         res.status(200).json(rendezVous);
     } catch (error) {
@@ -21,7 +24,9 @@ router.get('/findRendezVous', async(req, res, next) => {
 router.get('/rendezVous/:id?', async(req, res, next) => {
     try {
         var {id} = req.params;
-        var rendezVous = (id == null) ? await RendezVous.find({}) : await RendezVous.findById(id) ;
+        var rendezVous = (id == null) 
+            ? await RendezVous.find({}).populate(['services', 'employe', 'client']).exec()
+            : await RendezVous.findById(id).populate(['services', 'employe', 'client']).exec() ;
         res.set('Access-Control-Allow-Origin', '*');
         res.status(200).json(rendezVous);
     } catch (error) {
