@@ -8,7 +8,7 @@ var Service = require('../../models/Service');
 
 router.get('/findRendezVous', async(req, res, next) => {
     try {
-        var {employe, client} = req.query;
+        var {employe, client, datedebut, datefin} = req.query;
         const criteria = {};
         if (client != undefined) criteria.client = client;
         if (employe != undefined) criteria.employe = employe;

@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const employeSchema = mongoose.Schema(
     {
+        photoDeProfil: { type: String },
         nom: {
             type: String,
             required: [true, "Nom requis"]

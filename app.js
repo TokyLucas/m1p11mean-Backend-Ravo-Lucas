@@ -11,6 +11,8 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var rendezVousAPIRoute = require('./routes/rendezvous/rendezvousAPI');
+var employeAPIRoute = require('./routes/employe/employeAPI');
+var horaireAPIRoute = require('./routes/employe/horaireAPI');
 
 var app = express();
 dotenv.config({ path: './dev.env'});
@@ -25,11 +27,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/static', express.static('public'))
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 app.use('/rendezvousAPI', rendezVousAPIRoute);
+app.use('/employeAPI', employeAPIRoute);
+app.use('/employeAPI', horaireAPIRoute);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

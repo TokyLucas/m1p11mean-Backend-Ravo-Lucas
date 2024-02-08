@@ -1,3 +1,6 @@
+public/uploads/employes/*
+!public/uploads/employes/.gitkeep 
+
 # Logs
 logs
 *.log
