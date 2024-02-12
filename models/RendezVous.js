@@ -7,10 +7,6 @@ const rendezVousSchema = mongoose.Schema(
             type: Date,
             required: [true, "Date requis"]
         },
-        services: [{
-            type: Schema.Types.ObjectId, 
-            ref: 'Service'  
-        }],
         employe: { 
             type: Schema.Types.ObjectId, 
             ref: 'Employe' 
@@ -18,7 +14,15 @@ const rendezVousSchema = mongoose.Schema(
         client: { 
             type: Schema.Types.ObjectId,
             ref: 'Client' 
-        }
+        },
+        services: [{
+            type: Schema.Types.ObjectId, 
+            ref: 'Service'  
+        }],
+        tachesEffectue: [{
+            type: Schema.Types.ObjectId, 
+            ref: 'Service'
+        }]
     }
 );
 
