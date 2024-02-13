@@ -11,11 +11,11 @@ router.get('/horaire', async(req, res, next) => {
         var horaireDeTravail = 
             (_date == null) ? await HoraireDeTravail.find({
                 employe: emp
-            }).sort({date: 'desc', heure_debut: 'desc'}).limit(1)
+            }).sort({ '_id' : -1 }).limit(1)
             : await HoraireDeTravail.find({
                 employe: emp,
                 date: { $lte: new Date(_date) }
-            }).sort({date: 'desc', heure_debut: 'desc'}).limit(1);
+            }).sort({ '_id' : -1 }).limit(1);
 
         res.set('Access-Control-Allow-Origin', '*');
         res.status(200).json(horaireDeTravail);

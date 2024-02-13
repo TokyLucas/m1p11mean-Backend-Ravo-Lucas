@@ -10,6 +10,8 @@ var dotenv = require('dotenv');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+var jwtAuth = require('./middlewares/jwtAuthMiddleware');
+var loginRoute = require('./routes/loginRoute');
 var rendezVousAPIRoute = require('./routes/rendezvous/rendezvousAPI');
 var employeAPIRoute = require('./routes/employe/employeAPI');
 var horaireAPIRoute = require('./routes/employe/horaireAPI');
@@ -32,9 +34,10 @@ app.use('/static', express.static('public'))
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
+app.use('/login', loginRoute);
 app.use('/rendezvousAPI', rendezVousAPIRoute);
-app.use('/employeAPI', employeAPIRoute);
-app.use('/employeAPI', horaireAPIRoute);
+app.use('/employeAPI', jwtAuth(), employeAPIRoute);
+app.use('/employeAPI', jwtAuth(), horaireAPIRoute);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

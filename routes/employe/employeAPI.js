@@ -7,7 +7,6 @@ var fs = require('fs');
 
 var Employe = require('../../models/Employe');
 
-
 router.get('/employe/:id?', async(req, res, next) => {
     try {
         var {id} = req.params;

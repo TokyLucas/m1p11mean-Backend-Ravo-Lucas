@@ -1,6 +1,4 @@
-var express = require('express');
-var router = express.Router();
-
+const mongoose = require('mongoose');
 var RendezVous = require('../../models/RendezVous');
 
 var findRendezVous = async function(req, res, next){
@@ -11,7 +9,7 @@ var findRendezVous = async function(req, res, next){
         if (nomClient != undefined) criteria["client.nom"] =  {$regex: nomClient, $options: 'i'};
         if (prenomClient != undefined) criteria["client.prenom"] = {$regex: prenomClient, $options: 'i'};
 
-        if (empId != undefined) criteria["employe._id"] = empId;
+        if (empId != undefined) criteria["employe._id"] = new mongoose.Types.ObjectId(empId);
         if (nomEmp != undefined) criteria["employe.nom"] =  {$regex: nomEmp, $options: 'i'};
         if (prenomEmp != undefined) criteria["employe.prenom"] = {$regex: prenomEmp, $options: 'i'};
 
@@ -21,6 +19,8 @@ var findRendezVous = async function(req, res, next){
         else if (datedebut != undefined && datefin == undefined) criteria["date"] = { $gte: new Date(datedebut) };
         else if (datefin != undefined && datedebut == undefined) criteria["date"] = { $lte: new Date(datefin) };
 
+        console.log(criteria);
+        
         var rendezVous = await RendezVous.aggregate([
             {
                 $lookup: {
@@ -74,13 +74,15 @@ var suiviTacheEmp = async function(req, res, next){
         var {datedebut, datefin, _date, empId} = req.query;
         const criteria = {};
 
-        if (empId != undefined) criteria["employe._id"] = empId;
+        if (empId != undefined) criteria["employe._id"] = new mongoose.Types.ObjectId(empId);
 
         if (_date != undefined) criteria["date"] = new Date(_date);
         
         if (datefin != undefined && datedebut != undefined)  criteria["date"] = { $gte: new Date(datedebut) ,  $lte: new Date(datefin) };        
         else if (datedebut != undefined && datefin == undefined) criteria["date"] = { $gte: new Date(datedebut) };
         else if (datefin != undefined && datedebut == undefined) criteria["date"] = { $lte: new Date(datefin) };
+        
+        console.log(criteria);
 
         var rendezVous = await RendezVous.aggregate([
             {
