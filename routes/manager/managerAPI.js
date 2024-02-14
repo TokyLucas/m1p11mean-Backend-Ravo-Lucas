@@ -1,56 +1,45 @@
 var express = require('express');
 var router = express.Router();
 
-var empMiddleware = require('../../middlewares/services/empMiddleware');
-
 var multer = require('multer');
 var uploadMiddleware = require('../../middlewares/uploadMiddleware');
 var fs = require('fs');
 
-var Employe = require('../../models/Employe');
+var Manager = require('../../models/Manager');
 
-router.get('/employe/:id?', async(req, res, next) => {
+router.get('/manager/:id?', async(req, res, next) => {
     try {
         var {id} = req.params;
-        var employe = (id == null) 
-            ? await Employe.find({})
-            : await Employe.findById(id);
+        var manager = (id == null) 
+            ? await Manager.find({})
+            : await Manager.findById(id);
         res.set('Access-Control-Allow-Origin', '*');
-        res.status(200).json(employe);
-    } catch (error) {
-        res.status(500).json({message: error.message});
-    }
-})
-
-router.get('/findEmploye', empMiddleware.findEmploye , async(req, res, next) => {
-    try {    
-        res.set('Access-Control-Allow-Origin', '*');
-        res.status(200).json(req.employe);
+        res.status(200).json(manager);
     } catch (error) {
         res.status(500).json({message: error.message});
     }
 })
 
 var fileFields = [{ name: 'photoDeProfil', maxCount: 12 }, { name: 'photoDeProfil'}];
-router.post('/employe',  uploadMiddleware(fileFields, 'public/uploads/employes/'), async(req, res, next) => {
+router.post('/manager',  uploadMiddleware(fileFields, 'public/uploads/employes/'), async(req, res, next) => {
     try {
-        var employe = new Employe();
-        employe.nom = req.body.nom;
-        employe.prenom = req.body.prenom;
-        employe.dateDeNaissance = req.body.dateDeNaissance;
-        employe.sexe = req.body.sexe;
+        var manager = new Manager();
+        manager.nom = req.body.nom;
+        manager.prenom = req.body.prenom;
+        manager.dateDeNaissance = req.body.dateDeNaissance;
+        manager.sexe = req.body.sexe;
 
         var files = JSON.parse(JSON.stringify(req.files));
         Object.keys(files).forEach( key => {
             files[key].forEach( file => { 
-                employe.photoDeProfil = file.filename;
+                manager.photoDeProfil = file.filename;
             })
         })
-        await Employe.create(employe);
+        await Manager.create(manager);
 
-        // var employe = await Employe.create(req.body);
+        // var manager = await Manager.create(req.body);
         res.set('Access-Control-Allow-Origin', '*');
-        res.status(200).json(employe);
+        res.status(200).json(manager);
     } catch (error) {
         var files = JSON.parse(JSON.stringify(req.files));
         Object.keys(files).forEach( key => {
@@ -64,28 +53,28 @@ router.post('/employe',  uploadMiddleware(fileFields, 'public/uploads/employes/'
 })
 
 var fileFields = [{ name: 'photoDeProfil', maxCount: 12 }, { name: 'photoDeProfil'}];
-router.put('/employe/:id', uploadMiddleware(fileFields, 'public/uploads/employes/'), async(req, res, next) => {
+router.put('/manager/:id', uploadMiddleware(fileFields, 'public/uploads/managers/'), async(req, res, next) => {
     try {
         var {id} = req.params;
         if (id != null) {
-            var employe = {};
-            employe.nom = req.body.nom;
-            employe.prenom = req.body.prenom;
-            employe.dateDeNaissance = req.body.dateDeNaissance;
-            employe.sexe = req.body.sexe;
+            var manager = {};
+            manager.nom = req.body.nom;
+            manager.prenom = req.body.prenom;
+            manager.dateDeNaissance = req.body.dateDeNaissance;
+            manager.sexe = req.body.sexe;
 
             var files = JSON.parse(JSON.stringify(req.files));
             Object.keys(files).forEach( key => {
                 files[key].forEach( file => {
-                    employe.photoDeProfil = file.filename;
+                    manager.photoDeProfil = file.filename;
                 })
             })
 
-            var updatedEmploye = await Employe.findByIdAndUpdate(id, employe, {
+            var updatedEmploye = await Manager.findByIdAndUpdate(id, manager, {
                 new: true
             });
 
-            // var updatedEmploye = await Employe.findByIdAndUpdate(id, req.body, {
+            // var updatedEmploye = await Manager.findByIdAndUpdate(id, req.body, {
             //     new: true
             // });
         }
@@ -104,14 +93,14 @@ router.put('/employe/:id', uploadMiddleware(fileFields, 'public/uploads/employes
     }
 })
 
-router.delete('/employe/:id', async(req, res, next) => {
+router.delete('/manager/:id', async(req, res, next) => {
     try {
         var {id} = req.params;
         if (id != null) {
-            await Employe.findByIdAndDelete(id) ;
+            await Manager.findByIdAndDelete(id) ;
         }
         res.set('Access-Control-Allow-Origin', '*');
-        res.status(200).json({ message: `Employe ${id} supprimé`});
+        res.status(200).json({ message: `Manager ${id} supprimé`});
     } catch (error) {
         res.status(500).json({message: error.message});
     }

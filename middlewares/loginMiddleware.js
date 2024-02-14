@@ -29,7 +29,7 @@ const loginMiddleware = (compteType) => {
             res.token = token;
             next();
         } catch (error) {
-            return res.status(403).json({ error: error.message});
+            return res.status(403).json({ message: error.message});
         }
     }
 };
