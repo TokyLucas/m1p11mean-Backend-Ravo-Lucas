@@ -15,16 +15,28 @@ var findService = async function(req, res, next){
         else if (prixMin != undefined && prixMax == undefined) criteria["prix"] = { $gte: Number(prixMin) };
         else if (prixMax != undefined && prixMin == undefined) criteria["prix"] = { $lte: Number(prixMax) };
         
-        console.log(criteria);
+        // console.log(criteria);
+
+        var count = await Service.aggregate([
+            {
+                $match: criteria
+            }
+        ]).count("total");
 
         var service = await Service.aggregate([
             {
                 $match: criteria
             }
         ])
-        .exec() ;
+        .skip(req.paginateOptions.skip)
+        .limit(req.paginateOptions.limit)
+        .exec();
 
-        req.service = service;
+        res.service = {
+            "data": service,
+            "total": (count.length > 0) ? count[0].total : 0,
+            "totalPage": (count.length > 0) ? Math.ceil( count[0].total / req.paginateOptions.limit ) : 0
+        };
         next();
     } catch(error) {
         throw error;

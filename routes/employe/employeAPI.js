@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var empMiddleware = require('../../middlewares/services/empMiddleware');
+var paginateMiddleware = require('../../middlewares/services/paginateMiddleware');
 
 var multer = require('multer');
 var uploadMiddleware = require('../../middlewares/uploadMiddleware');
@@ -22,10 +23,10 @@ router.get('/employe/:id?', async(req, res, next) => {
     }
 })
 
-router.get('/findEmploye', empMiddleware.findEmploye , async(req, res, next) => {
+router.get('/findEmploye', paginateMiddleware.paginate, empMiddleware.findEmploye , async(req, res, next) => {
     try {    
         res.set('Access-Control-Allow-Origin', '*');
-        res.status(200).json(req.employe);
+        res.status(200).json(res.employe);
     } catch (error) {
         res.status(500).json({message: error.message});
     }

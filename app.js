@@ -15,6 +15,7 @@ var loginRoute = require('./routes/loginRoute');
 var rendezVousAPIRoute = require('./routes/rendezvous/rendezvousAPI');
 var serviceAPIRoute = require('./routes/service/serviceAPI');
 var managerAPIRoute = require('./routes/manager/managerAPI');
+var statsAPIRoute = require('./routes/manager/statsAPI');
 var employeAPIRoute = require('./routes/employe/employeAPI');
 var horaireAPIRoute = require('./routes/employe/horaireAPI');
 
@@ -39,7 +40,8 @@ app.use('/users', usersRouter);
 app.use('/login', loginRoute);
 app.use('/rendezvousAPI', jwtAuth(), rendezVousAPIRoute);
 app.use('/serviceAPI', jwtAuth(), serviceAPIRoute);
-app.use('/managerAPI', jwtAuth(), managerAPIRoute);
+app.use('/managerAPI', managerAPIRoute);
+app.use('/managerAPI', statsAPIRoute);
 app.use('/employeAPI', jwtAuth(), employeAPIRoute);
 app.use('/employeAPI', jwtAuth(), horaireAPIRoute);
 
