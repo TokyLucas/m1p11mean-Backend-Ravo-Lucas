@@ -17,6 +17,7 @@ var serviceAPIRoute = require('./routes/service/serviceAPI');
 var managerAPIRoute = require('./routes/manager/managerAPI');
 var employeAPIRoute = require('./routes/employe/employeAPI');
 var horaireAPIRoute = require('./routes/employe/horaireAPI');
+var clientAPIRoute = require('./routes/client/clientAPI');
 
 var app = express();
 dotenv.config({ path: './dev.env'});
@@ -42,6 +43,7 @@ app.use('/serviceAPI', jwtAuth(), serviceAPIRoute);
 app.use('/managerAPI', jwtAuth(), managerAPIRoute);
 app.use('/employeAPI', jwtAuth(), employeAPIRoute);
 app.use('/employeAPI', jwtAuth(), horaireAPIRoute);
+app.use('/clientAPI'/*, jwtAuth()*/, clientAPIRoute);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

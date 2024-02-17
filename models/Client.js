@@ -8,7 +8,7 @@ const clientSchema = mongoose.Schema(
         },
         prenom: {
             type: String,
-            required: [true, "Prénom requis"]
+            required: [false, ""]
         },
         dateDeNaissance: {
             type: Date,

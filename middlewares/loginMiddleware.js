@@ -2,6 +2,7 @@ var Compte = require('../models/Compte');
 var jwt = require('jsonwebtoken');
 
 const loginMiddleware = (compteType) => {
+
     return async (req, res, next) => {
         try {
             var { login, motdepasse } = req.body;
