@@ -4,6 +4,7 @@ var router = express.Router();
 const Service = require('../../models/Service');
 
 var serviceMiddleware = require('../../middlewares/services/serviceMiddleware');
+var paginateMiddleware = require('../../middlewares/services/paginateMiddleware');
 
 router.get('/service/:id?', async(req, res, next) => {
     try {
@@ -20,10 +21,10 @@ router.get('/service/:id?', async(req, res, next) => {
     }
 })
 
-router.get('/findService', serviceMiddleware.findService , async(req, res, next) => {
+router.get('/findService', paginateMiddleware.paginate, serviceMiddleware.findService , async(req, res, next) => {
     try {    
         res.set('Access-Control-Allow-Origin', '*');
-        res.status(200).json(req.service);
+        res.status(200).json(res.service);
     } catch (error) {
         res.status(500).json({message: error.message});
     }

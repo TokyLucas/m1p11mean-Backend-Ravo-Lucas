@@ -10,20 +10,31 @@ var findEmploye = async function(req, res, next){
         if (nomEmp != undefined) criteria["nom"] =  {$regex: nomEmp, $options: 'i'};
         if (prenomEmp != undefined) criteria["prenom"] = {$regex: prenomEmp, $options: 'i'};
         if (sexe != undefined) criteria["sexe"] = sexe;
-
         if (dateDeNaissance != undefined) criteria["dateDeNaissance"] = new Date(dateDeNaissance);
         
-
-        console.log(criteria);
+        // console.log(criteria);
         
+        var count = await Employe.aggregate([
+            {
+                $match: criteria
+            }
+        ]).count("total");
+
         var employe = await Employe.aggregate([
             {
                 $match: criteria
             }
         ])
-        .exec() ;
+        .skip(req.paginateOptions.skip)
+        .limit(req.paginateOptions.limit)
+        .exec();
 
-        req.employe = employe;
+        res.employe = {
+            "data": employe,
+            "total": (count.length > 0) ? count[0].total : 0,
+            "totalPage": (count.length > 0) ? Math.ceil( count[0].total / req.paginateOptions.limit ) : 0
+        };
+
         next();
     } catch(error) {
         throw error;

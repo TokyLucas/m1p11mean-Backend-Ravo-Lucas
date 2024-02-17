@@ -81,8 +81,6 @@ var suiviTacheEmp = async function(req, res, next){
         if (datefin != undefined && datedebut != undefined)  criteria["date"] = { $gte: new Date(datedebut) ,  $lte: new Date(datefin) };        
         else if (datedebut != undefined && datefin == undefined) criteria["date"] = { $gte: new Date(datedebut) };
         else if (datefin != undefined && datedebut == undefined) criteria["date"] = { $lte: new Date(datefin) };
-        
-        console.log(criteria);
 
         var rendezVous = await RendezVous.aggregate([
             {
