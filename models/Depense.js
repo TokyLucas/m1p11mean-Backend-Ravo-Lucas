@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const serviceSchema = mongoose.Schema(
+const depenseSchema = mongoose.Schema(
     {
         type: {
             type: String,
@@ -21,6 +21,6 @@ const serviceSchema = mongoose.Schema(
     }
 );
 
-const Service = mongoose.model('Service', serviceSchema);
+const Depense = mongoose.model('Depense', depenseSchema);
 
-module.exports = Service;
+module.exports = Depense;

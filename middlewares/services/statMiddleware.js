@@ -22,7 +22,7 @@ var tempsMoyenne = async (req, res, next) => {
                         $dateDiff: {
                             startDate: { $toDate: "$heure_debut" },
                             endDate: { $toDate:  "$heure_fin" },
-                            unit: "minute"
+                            unit: "hour"
                         }
                     }
                 }
@@ -41,6 +41,7 @@ var tempsMoyenne = async (req, res, next) => {
                     as: "employe"
                 }
             },
+            { $unwind: {path: '$employe'} }
         ]);
         res.tempsMoyenne = tempsMoyenne;
         next();
@@ -101,7 +102,8 @@ var nombreDeReservation = async (req, res, next) => {
                     },
                     count : { $sum: 1 } 
                 }
-            }
+            },
+            { $sort: { "_id.day": 1 } }
         ])
         .exec() ;
 
@@ -182,11 +184,23 @@ var chiffreDaffaires = async (req, res, next) => {
             {
                 $project: {
                     perCommissionTotal: "$perCommissionTotal",
+                    prixServiceTotal: "$prixServiceTotal",
                     montantCommision: {
                         $multiply: [ "$perCommissionTotal", "$prixServiceTotal", 0.01 ]
+                    },
+                }
+            },
+            {
+                $project: {
+                    perCommissionTotal: "$perCommissionTotal",
+                    prixServiceTotal: "$prixServiceTotal",
+                    montantCommision: "$montantCommision",
+                    montant: {
+                        $subtract: ["$prixServiceTotal" , "$montantCommision"]
                     }
                 }
-            }
+            },
+            { $sort: { "_id.day": 1 } }
         ])
         .exec() ;
 
@@ -201,6 +215,59 @@ var chiffreDaffaires = async (req, res, next) => {
     }
 }
 
+var benefices = async (req, res, next) => {
+    try {
+        
+        var chiffreDaffaires = Array.from(res.chiffreDaffaires.data);
+        var depenses = Array.from(res.depenses.data);
+        var benefice = [];
+        var montantBenefice = 0;
+        if(depenses.length > chiffreDaffaires.length){
+            for(let depense of depenses) {
+                montantBenefice = -depense.montantTotal;
+
+                for(let chiffre of chiffreDaffaires){
+                    if(depense._id.day.getTime() == chiffre._id.day.getTime()){
+                        montantBenefice = chiffre.montant - depense.montantTotal;
+                        break;
+                    }
+                }
+                benefice.push({
+                    "_id": { "day": depense._id.day },
+                    "benefices": montantBenefice
+                });
+            }
+        }
+        else {
+            for(let chiffre of chiffreDaffaires){
+                montantBenefice = chiffre.montant;
+
+                for(let depense of depenses){
+                    if(depense._id.day.getTime() == chiffre._id.day.getTime()){
+                        montantBenefice = chiffre.montant - depense.montantTotal;
+                        break;
+                    }
+                }
+                benefice.push({
+                    "_id": { "day": depense._id.day },
+                    "benefices": montantBenefice
+                });
+            }
+        }
+
+        res.benefice = {
+            time: res.chiffreDaffaires.time,
+            data: benefice
+        };
+
+        next();
+    } catch (error) {
+        throw(error);
+    }
+}
+
+
 module.exports.tempsMoyenne = tempsMoyenne;
 module.exports.nombreDeReservation = nombreDeReservation;
 module.exports.chiffreDaffaires = chiffreDaffaires;
+module.exports.benefices = benefices;
