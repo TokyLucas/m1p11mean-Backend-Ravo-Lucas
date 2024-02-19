@@ -9,6 +9,7 @@ var uploadMiddleware = require('../../middlewares/uploadMiddleware');
 var fs = require('fs');
 
 var Employe = require('../../models/Employe');
+var HoraireDeTravail = require('../../models/HoraireDeTravail');
 
 router.get('/employe/:id?', async(req, res, next) => {
     try {
@@ -113,6 +114,25 @@ router.delete('/employe/:id', async(req, res, next) => {
         }
         res.set('Access-Control-Allow-Origin', '*');
         res.status(200).json({ message: `Employe ${id} supprimé`});
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+})
+
+router.get('/employeDispo', async(req, res, next) => {
+    try {
+
+        var  {_date, _time } = req.query;
+        const horaireTravailQuery = { date: { $lte: new Date(_date) } };
+        const horaireTravailResults = await HoraireDeTravail.find(horaireTravailQuery);
+
+        const employeIds = Array.from(new Set(horaireTravailResults.map(horaire => horaire.employe)));
+
+        const employeQuery = { _id: { $in: employeIds } };
+        const employeResults = await Employe.find(employeQuery);
+
+        res.set('Access-Control-Allow-Origin', '*');
+        res.status(200).json(employeResults);
     } catch (error) {
         res.status(500).json({message: error.message});
     }
