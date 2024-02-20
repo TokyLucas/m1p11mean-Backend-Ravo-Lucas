@@ -7,6 +7,9 @@ const rendezVousSchema = mongoose.Schema(
             type: Date,
             required: [true, "Date requis"]
         },
+        contact: {
+            type: String
+        },
         employe: { 
             type: Schema.Types.ObjectId, 
             ref: 'Employe' 
