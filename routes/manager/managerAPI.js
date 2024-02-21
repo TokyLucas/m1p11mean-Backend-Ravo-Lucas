@@ -70,8 +70,8 @@ router.put('/manager/:id', uploadMiddleware(fileFields, 'public/uploads/managers
                 })
             })
 
-            var updatedEmploye = await Manager.findByIdAndUpdate(id, manager, {
-                new: true
+            var updatedManager = await Manager.findByIdAndUpdate(id, manager, {
+                new: true, runValidators: true
             });
 
             // var updatedEmploye = await Manager.findByIdAndUpdate(id, req.body, {
@@ -79,7 +79,7 @@ router.put('/manager/:id', uploadMiddleware(fileFields, 'public/uploads/managers
             // });
         }
         res.set('Access-Control-Allow-Origin', '*');
-        res.status(200).json(updatedEmploye);
+        res.status(200).json(updatedManager);
     } catch (error) {
         var files = JSON.parse(JSON.stringify(req.files));
         Object.keys(files).forEach( key => {

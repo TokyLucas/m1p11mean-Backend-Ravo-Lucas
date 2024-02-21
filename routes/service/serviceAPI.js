@@ -46,7 +46,7 @@ router.put('/service/:id',  async(req, res, next) => {
         var {id} = req.params;
         if (id != null) {
             var updateService = await Service.findByIdAndUpdate(id, req.body, {
-                new: true
+                new: true, runValidators: true
             });
         }
         res.set('Access-Control-Allow-Origin', '*');

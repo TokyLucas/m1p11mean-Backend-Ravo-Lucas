@@ -40,7 +40,7 @@ router.put('/horaire/:id',  async(req, res, next) => {
         var {id} = req.params;
         if (id != null) {
             var updatedhoraireDeTravail = await HoraireDeTravail.findByIdAndUpdate(id, req.body, {
-                new: true
+                new: true, runValidators: true
             });
         }
         res.set('Access-Control-Allow-Origin', '*');
