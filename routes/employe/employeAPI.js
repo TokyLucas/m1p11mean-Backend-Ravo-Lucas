@@ -136,11 +136,7 @@ router.put('/employe/:id', uploadMiddleware(fileFields, 'public/uploads/employes
                             typeUser: "Employe"
                         };
 
-                        return Compte.updateOne({userId: id}, {
-                            login: compte.login,
-                            motdepasse: compte.motdepasse,
-                            typeUser: compte.typeUser
-                        }, options);
+                        return Compte.updateOne({userId: id}, compte, options);
                     }
                 )
             });

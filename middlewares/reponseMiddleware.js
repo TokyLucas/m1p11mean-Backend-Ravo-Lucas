@@ -1,16 +1,21 @@
 const successResponseMiddleware = async (req, res, next)=> {
     res.set('Access-Control-Allow-Origin', '*');
     var session = res.session;
+    var status = 200;
+    var body = {};
+    
     try{
         if (session) {
             await session.commitTransaction();
         }
-        res.status(200).json(res.data);
+        body = res.data;
     } catch (error) {
-        session.abortTranscation();
-        res.status(500).json({message: error.message});
+        if (session) session.abortTranscation();
+        status = 500;
+        body = {message: error.message};
     } finally {
-        session.endSession();
+        if (session) session.endSession();
+        res.status(status).json(body);
     }
 }
 
