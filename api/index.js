@@ -1,70 +1,100 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-const cors = require('cors')
+#!/usr/bin/env node
 
-var dotenv = require('dotenv');
+/**
+ * Module dependencies.
+ */
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var app = require('../app');
+var debug = require('debug')('m1p11mean-backend-ravo-lucas:server');
+var http = require('http');
+var mongoose = require('mongoose');
 
-var jwtAuth = require('./middlewares/jwtAuthMiddleware');
-var loginRoute = require('./routes/loginRoute');
-var rendezVousAPIRoute = require('./routes/rendezvous/rendezvousAPI');
-var serviceAPIRoute = require('./routes/service/serviceAPI');
-var managerAPIRoute = require('./routes/manager/managerAPI');
-var depenseAPIRoute = require('./routes/manager/depenseAPI');
-var statsAPIRoute = require('./routes/manager/statsAPI');
-var employeAPIRoute = require('./routes/employe/employeAPI');
-var horaireAPIRoute = require('./routes/employe/horaireAPI');
-var clientAPIRoute = require('./routes/client/clientAPI');
-var notificationAPIRoute = require('./routes/notification/notificationAPI');
+/**
+ * Get port from environment and store in Express.
+ */
 
-var app = express();
-dotenv.config({ path: './dev.env'});
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+/**
+ * Create HTTP server.
+ */
 
-app.use(cors());
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/static', express.static('public'))
+var server = http.createServer(app);
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+/**
+ * Listen on provided port, on all network interfaces.
+ */
 
-app.use('/login', loginRoute);
-app.use('/rendezvousAPI', jwtAuth(), rendezVousAPIRoute);
-app.use('/serviceAPI', jwtAuth(), serviceAPIRoute);
-app.use('/managerAPI', managerAPIRoute);
-app.use('/managerAPI', depenseAPIRoute);
-app.use('/managerAPI', statsAPIRoute);
-app.use('/employeAPI', jwtAuth(), employeAPIRoute);
-app.use('/employeAPI', jwtAuth(), horaireAPIRoute);
-app.use('/clientAPI', jwtAuth(), clientAPIRoute);
-app.use('/notificationAPI', jwtAuth(), notificationAPIRoute);
+const DB_URL = process.env.MONGODB_URL;
+mongoose
+    .connect(DB_URL)
+    .then( () => {
+        server.listen(port);
+        server.on('error', onError);
+        server.on('listening', onListening);
+    })
+    .catch( (error) => {
+        console.error('[e]', error);
+    })
+;
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-    next(createError(404));
-});
+/**
+ * Normalize a port into a number, string, or false.
+ */
 
-// error handler
-app.use(function(err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
+function normalizePort(val) {
+  var port = parseInt(val, 10);
 
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
-});
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
 
-module.exports = app;
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
