@@ -25,7 +25,11 @@ const rendezVousSchema = mongoose.Schema(
         tachesEffectue: [{
             type: Schema.Types.ObjectId, 
             ref: 'Service'
-        }]
+        }],
+        dejaPaye: {
+            type: Boolean,
+            default: false
+        }
     }
 );
 

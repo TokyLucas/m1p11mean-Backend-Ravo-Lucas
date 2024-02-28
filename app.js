@@ -48,7 +48,7 @@ app.use('/managerAPI', depenseAPIRoute);
 app.use('/managerAPI', statsAPIRoute);
 app.use('/employeAPI', jwtAuth(), employeAPIRoute);
 app.use('/employeAPI', jwtAuth(), horaireAPIRoute);
-app.use('/clientAPI', jwtAuth(), clientAPIRoute);
+app.use('/clientAPI', clientAPIRoute);
 app.use('/notificationAPI', jwtAuth(), notificationAPIRoute);
 
 // catch 404 and forward to error handler

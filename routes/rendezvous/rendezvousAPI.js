@@ -105,4 +105,36 @@ router.delete('/rendezVous/:id', async(req, res, next) => {
     }
 })
 
+// get rdv by user id
+router.get('/rendezVousByUserId/:userId?', async(req, res, next) => {
+    try {
+        var {userId} = req.params;
+        console.log(userId);
+        const rendezVous = await RendezVous.find({client : userId}).populate(['services', 'employe', 'client', 'tachesEffectue']).exec();
+        console.log(rendezVous);
+        res.set('Access-Control-Allow-Origin', '*');
+        res.status(200).json(rendezVous);
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+})
+
+
+// update paiement du rdv
+router.put('/rendezVous/:rdvId/paiementEffectue', async(req, res, next) => {
+    try {
+        var {rdvId} = req.params;
+        if (rdvId != null) {
+            var updatedRendezVous = await RendezVous.findByIdAndUpdate(rdvId,
+                { $addToSet: { dejaPaye: true }},
+                { new: true }
+            )
+        }
+        res.set('Access-Control-Allow-Origin', '*');
+        res.status(200).json(updatedRendezVous);
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+})
+
 module.exports = router;
