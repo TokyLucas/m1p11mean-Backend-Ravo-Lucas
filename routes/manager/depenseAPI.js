@@ -21,6 +21,15 @@ router.get('/depense/:id?', async(req, res, next) => {
     }
 })
 
+router.get('/findDepense', paginateMiddleware.paginate, depenseMiddleware.findDepense, async(req, res, next) => {
+    try {    
+        res.set('Access-Control-Allow-Origin', '*');
+        res.status(200).json(res.depenses);
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+})
+
 router.get('/depenseTotal', paginateMiddleware.paginate, depenseMiddleware.findDepenseTotal, async(req, res, next) => {
     try {    
         res.set('Access-Control-Allow-Origin', '*');

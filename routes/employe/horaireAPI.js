@@ -39,8 +39,12 @@ router.put('/horaire/:id',  async(req, res, next) => {
     try {
         var {id} = req.params;
         if (id != null) {
-            var updatedhoraireDeTravail = await HoraireDeTravail.findByIdAndUpdate(id, req.body, {
-                new: true
+            var criteria = {
+                employe: id,
+                date: req.body.date || new Date().toISOString().split("T")[0]
+            }
+            var updatedhoraireDeTravail = await HoraireDeTravail.findOneAndUpdate(criteria, req.body, {
+                new: true, runValidators: true, upsert: true
             });
         }
         res.set('Access-Control-Allow-Origin', '*');
