@@ -176,7 +176,7 @@ router.get('/employeDispo', async(req, res, next) => {
     try {
 
         var  {_date, _time } = req.query;
-        const horaireTravailQuery = { date: { $lte: new Date(_date) } };
+        const horaireTravailQuery = { date:  new Date(_date),  heure_debut: { $gte: _time }  };
         const horaireTravailResults = await HoraireDeTravail.find(horaireTravailQuery);
 
         const employeIds = Array.from(new Set(horaireTravailResults.map(horaire => horaire.employe)));
