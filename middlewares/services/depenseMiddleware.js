@@ -2,9 +2,11 @@ const Depense = require('../../models/Depense');
 
 var findDepense = async (req, res, next) => {
     try {
-        var { type, prix, date} = req.query;
+        var { type, prix} = req.query;
         var criteria = {}
 
+        if (type != undefined) criteria["type"] = type;
+        if (nomEmp != undefined) criteria["prix"] =  Number.parseFloat(prix);
 
 
         var count = await Depense.aggregate([
