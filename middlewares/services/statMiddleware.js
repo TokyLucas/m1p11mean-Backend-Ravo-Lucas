@@ -222,18 +222,20 @@ var benefices = async (req, res, next) => {
         var depenses = Array.from(res.depenses.data);
         var benefice = [];
         var montantBenefice = 0;
+        var date = "";
         if(depenses.length > chiffreDaffaires.length){
             for(let depense of depenses) {
                 montantBenefice = -depense.montantTotal;
 
                 for(let chiffre of chiffreDaffaires){
                     if(depense._id.day.getTime() == chiffre._id.day.getTime()){
+                        date = depense._id.day;
                         montantBenefice = chiffre.montant - depense.montantTotal;
                         break;
                     }
                 }
                 benefice.push({
-                    "_id": { "day": depense._id.day },
+                    "_id": { "day": date },
                     "benefices": montantBenefice
                 });
             }
@@ -244,12 +246,13 @@ var benefices = async (req, res, next) => {
 
                 for(let depense of depenses){
                     if(depense._id.day.getTime() == chiffre._id.day.getTime()){
+                        date = depense._id.day;
                         montantBenefice = chiffre.montant - depense.montantTotal;
                         break;
                     }
                 }
                 benefice.push({
-                    "_id": { "day": depense._id.day },
+                    "_id": { "day": date },
                     "benefices": montantBenefice
                 });
             }
