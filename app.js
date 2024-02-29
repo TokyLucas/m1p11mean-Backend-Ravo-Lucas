@@ -16,11 +16,14 @@ var rendezVousAPIRoute = require('./routes/rendezvous/rendezvousAPI');
 var serviceAPIRoute = require('./routes/service/serviceAPI');
 var managerAPIRoute = require('./routes/manager/managerAPI');
 var depenseAPIRoute = require('./routes/manager/depenseAPI');
-var statsAPIRoute = require('./routes/manager/statsAPI');
+var statsAPIRoute = require('./routes/manager/statsAPI'); 
 var employeAPIRoute = require('./routes/employe/employeAPI');
 var horaireAPIRoute = require('./routes/employe/horaireAPI');
 var clientAPIRoute = require('./routes/client/clientAPI');
+var paiementAPIRoute = require('./routes/client/paiementAPI');
 var notificationAPIRoute = require('./routes/notification/notificationAPI');
+
+
 
 var app = express();
 dotenv.config({ path: './dev.env'});
@@ -50,6 +53,7 @@ app.use('/employeAPI', jwtAuth(), employeAPIRoute);
 app.use('/employeAPI', jwtAuth(), horaireAPIRoute);
 app.use('/clientAPI', clientAPIRoute);
 app.use('/notificationAPI', jwtAuth(), notificationAPIRoute);
+app.use('/paiementAPI', jwtAuth(), paiementAPIRoute);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
